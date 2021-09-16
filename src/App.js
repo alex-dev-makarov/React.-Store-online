@@ -14,7 +14,7 @@ import CheckOut from './pages/check-out/check-out';
 
 import SignInUpPage from './pages/sign-In-up-page/sign-in-up-page';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
-
+// import Loader from './components/Loader/Loader'
 
 class App extends React.Component {
 
@@ -24,6 +24,7 @@ class App extends React.Component {
     this.unsubsribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
+
         userRef.onSnapshot(snapShot => {
           this.props.setCurrentUser({
             id: snapShot.id,
@@ -48,7 +49,7 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/signin' render={() => this.props.currentUser ? <Redirect to='/' /> : <SignInUpPage />} />
-          <Route exact path='/checkout' component={CheckOut}/>
+          <Route exact path='/checkout' component={CheckOut} />
         </Switch>
       </div>
     );
@@ -56,7 +57,7 @@ class App extends React.Component {
 }
 
 
-const mapStateToProps = createStructuredSelector ({
+const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 })
 export default connect(mapStateToProps, { setCurrentUser })(App);
