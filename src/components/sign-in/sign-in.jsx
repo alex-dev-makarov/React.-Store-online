@@ -3,31 +3,28 @@ import React from "react";
 import { FormInput } from "../form-input/form-input";
 import CustomButton from "../custom-button/custom-button";
 
-import { signInWithGoogle } from "../../firebase/firebase.utils";
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from "../../redux/userReducer/userReducer";
+
 import "./sign-in.style.scss";
 
+import { connect } from "react-redux";
 
-import { auth } from "../../firebase/firebase.utils";
-
-
-export class SignIn extends React.Component {
+class SignIn extends React.Component {
   state = {
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   };
 
-  handleSubmit = async e => {
+  handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { email, password} = this.state;
+    const { emailSignInStart } = this.props;
+    const { email, password } = this.state;
 
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      this.setState({ email: "", password: "" });
-    } catch(error) {
-      console.log(error)
-    }
-    
+    emailSignInStart({email, password});
   };
   handleChange = (e) => {
     const { value, name } = e.target;
@@ -35,6 +32,8 @@ export class SignIn extends React.Component {
     this.setState({ [name]: value });
   };
   render() {
+    const { googleSignInStart } = this.props;
+
     return (
       <div className="sign-in">
         <h2>I already have an account</h2>
@@ -57,14 +56,20 @@ export class SignIn extends React.Component {
             label="Password"
             type="password"
           />
-          <div className='signIn-button'>
-          <CustomButton type="submit">Sign in</CustomButton>
-          <CustomButton typr='button'onClick={signInWithGoogle} isGoogleButton>
-            Sign in with Google
-          </CustomButton>
+          <div className="signIn-button">
+            <CustomButton type="submit">Sign in</CustomButton>
+            <CustomButton
+              type="button"
+              onClick={ googleSignInStart }
+              isGoogleButton
+            >
+              Sign in with Google
+            </CustomButton>
           </div>
         </form>
       </div>
     );
   }
 }
+
+export default connect(null, { googleSignInStart, emailSignInStart })(SignIn);

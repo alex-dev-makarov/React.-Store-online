@@ -1,8 +1,8 @@
 import React from "react";
 
 import { connect } from "react-redux";
+import { signOutStart } from "../../redux/userReducer/userReducer";
 
-import { auth } from "../../firebase/firebase.utils";
 import { ReactComponent as Logo } from "../../assets/Logo.svg";
 
 import CartBag from "../cart-bag/cart-bag";
@@ -18,7 +18,7 @@ import {
   Line,
 } from "./Header.styles";
 
-const Header = ({ currentUser, cartHidden }) => (
+const Header = ({ currentUser, cartHidden, signOutStart }) => (
   <HeaderContainer>
 
     <LogoContainer to="/">
@@ -28,7 +28,7 @@ const Header = ({ currentUser, cartHidden }) => (
       <OptionNavLink to="/shop">SHOP</OptionNavLink>
       <OptionNavLink to="/">CONTACT</OptionNavLink>
       {currentUser ? (
-        <OptionNavLink as='div' onClick={() => auth.signOut()}>SIGN OUT</OptionNavLink>
+        <OptionNavLink as='div' onClick={signOutStart}>SIGN OUT</OptionNavLink>
       ) : (
         <OptionNavLink to="/signin">SIGN IN</OptionNavLink>
       )}
@@ -45,4 +45,4 @@ const mapStateToProps = createStructuredSelector({
   cartHidden: selectCartHidden,
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, { signOutStart })(Header);

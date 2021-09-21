@@ -1,59 +1,44 @@
 import React from "react";
 
-import CollectionPage from "../collection/collection";
-import { updateCollections } from "../../redux/shopDataReducer/shopDataReducer";
-import Loader from "../../components/Loader/loader";
+import { fetchCollectionStart } from "../../redux/shopDataReducer/shopDataReducer";
 
 import { Route } from "react-router-dom";
-import CollectionOverview from "../../components/collection-overview/collection-overview";
+
 
 import { connect } from "react-redux";
-import {
-  firestore,
-  convertCollectionData,
-} from "../../firebase/firebase.utils";
 
-const CollectionOverviewWithLoader = Loader(CollectionOverview);
-const CollectionPageWithLoader = Loader(CollectionPage);
+import CollectionOverviewContainer from "../../components/collection-overview/collection-overview-container";
+import CollectionPageContainer from "../collection/collection-page-container";
+
 
 class ShopPage extends React.Component {
-  state = {
-    isLoading: true,
-  };
-
-  unsubsribeFromSnapShot = null;
+  
 
   componentDidMount() {
-    const collectionRef = firestore.collection("collections");
+    const { fetchCollectionStart } = this.props
 
-    collectionRef.get().then((snapshot) => {
-      const collectionMap = convertCollectionData(snapshot);
-      this.props.updateCollections(collectionMap);
-      this.setState({ isLoading: false });
-    });
+    fetchCollectionStart()
   }
 
   render() {
     const { match } = this.props;
-    const { isLoading } = this.state;
+    
     return (
       <div className="shop-page">
         <Route
           exact
           path={`${match.path}`}
-          render={(props) => (
-            <CollectionOverviewWithLoader isLoading={isLoading} {...props} />
-          )}
+          component={CollectionOverviewContainer}
         />
         <Route
           path={`${match.path}/:collectionId`}
-          render={(props) => (
-            <CollectionPageWithLoader isLoading={isLoading} {...props} />
-          )}
+          component={CollectionPageContainer}
         />
       </div>
     );
   }
 }
 
-export default connect(null, { updateCollections })(ShopPage);
+
+
+export default connect(null, { fetchCollectionStart })(ShopPage);

@@ -3,7 +3,6 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
 
 
-
 const config = {
     apiKey: "AIzaSyCbUz7L-QqYxDrqWej4I6Ydfd82QSz0WcM",
     authDomain: "store-db-c3a0d.firebaseapp.com",
@@ -70,15 +69,24 @@ export const convertCollectionData = (collections) => {
     }, {})
 }
 
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject)
+    })
+}
+
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
 
 
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

@@ -19,11 +19,21 @@ export const selectShopData = createSelector(
 
 export const selectCollectionsForPrev = createSelector(
     [selectShopData],
-    collections => 
-    collections ? Object.keys(collections).map(key => collections[key]) : []
+    collections =>
+        collections ? Object.keys(collections).map(key => collections[key]) : []
 )
 
 export const selectCollection = collectionUrlParam => createSelector(
     [selectShopData],
     collections => (collections ? collections[collectionUrlParam] : null)
 )
+export const selectCollectionIsFetching = createSelector(
+    [selectorShop],
+    shop => shop.isFetching
+)
+
+export const selectCollectionLoaded = createSelector(
+    [selectorShop],
+    shop => !!shop.collections
+)
+
