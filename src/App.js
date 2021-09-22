@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom'
 import './App.css';
 
@@ -15,53 +15,31 @@ import CheckOut from './pages/check-out/check-out';
 
 import SignInUpPage from './pages/sign-In-up-page/sign-in-up-page';
 
-// import Loader from './components/Loader/Loader'
 
-class App extends React.Component {
 
-  unsubsribeFromAuth = null
+const App = ({ checkUserSession, currentUser }) => {
 
-  componentDidMount() {
-
-    const { checkUserSession } = this.props
+  useEffect(() => {
     checkUserSession()
-    // this.unsubsribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-    //   if (userAuth) {
-    //     const userRef = await createUserProfileDocument(userAuth);
+  }, [checkUserSession])
 
-    //     userRef.onSnapshot(snapShot => {
-    //       this.props.setCurrentUser({
-    //         id: snapShot.id,
-    //         ...snapShot.data()
-    //       });
-    //     })
-    //   } else {
-    //     this.props.setCurrentUser(userAuth)
-    //   }
-    // })
-  }
 
-  componentWillUnmount() {
-    this.unsubsribeFromAuth()
-  }
-
-  render() {
-    return (
-      <div>
-        <Header />
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route path='/shop' component={ShopPage} />
-          <Route exact path='/signin' render={() => this.props.currentUser ? <Redirect to='/' /> : <SignInUpPage />} />
-          <Route exact path='/checkout' component={CheckOut} />
-        </Switch>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Header />
+      <Switch>
+        <Route exact path='/' component={HomePage} />
+        <Route path='/shop' component={ShopPage} />
+        <Route exact path='/signin' render={() => currentUser ? <Redirect to='/' /> : <SignInUpPage />} />
+        <Route exact path='/checkout' component={CheckOut} />
+      </Switch>
+    </div>
+  );
 }
+
 
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 })
-export default connect(mapStateToProps, {checkUserSession})(App);
+export default connect(mapStateToProps, { checkUserSession })(App);
