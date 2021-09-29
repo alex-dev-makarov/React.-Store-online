@@ -20,7 +20,6 @@ import {
 
 const Header = ({ currentUser, cartHidden, signOutStart }) => (
   <HeaderContainer>
-
     <LogoContainer to="/">
       <Logo className="logo" />
     </LogoContainer>
@@ -36,7 +35,6 @@ const Header = ({ currentUser, cartHidden, signOutStart }) => (
     </OptionsContainer>
     {!cartHidden && <CartDropdown />}
     <Line></Line>
-
   </HeaderContainer>
 );
 
