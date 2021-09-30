@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { GlobalStyle } from './global.styles';
 
-
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUser } from './redux/userReducer/user.selector';
-
 import { checkUserSession } from './redux/userReducer/userReducer'
 
+
 import HomePage from './pages/homepage/homepage';
-import ShopPage from './pages/shop/shop';
 import Header from './components/header/header';
-import CheckOut from './pages/check-out/check-out';
+import Loader from './components/Loader/loader';
 
-import SignInUpPage from './pages/sign-In-up-page/sign-in-up-page';
+import ErrorBoundary from './pages/error-boundary/error-boundary';
 
-
+const ShopPage = lazy(() => import('./pages/shop/shop'))
+const SignInUpPage = lazy(() => import('./pages/sign-In-up-page/sign-in-up-page'))
+const CheckOut = lazy(() => import('./pages/check-out/check-out'))
 
 const App = () => {
 
@@ -28,13 +28,17 @@ const App = () => {
 
   return (
     <div>
-      <GlobalStyle/>
+      <GlobalStyle />
       <Header />
       <Switch>
-        <Route exact path='/' component={HomePage} />
-        <Route path='/shop' component={ShopPage} />
-        <Route exact path='/signin' render={() => currentUser ? <Redirect to='/' /> : <SignInUpPage />} />
-        <Route exact path='/checkout' component={CheckOut} />
+        <ErrorBoundary>
+          <Route exact path='/' component={HomePage} />
+          <Suspense fallback={<Loader />}>
+            <Route path='/shop' component={ShopPage} />
+            <Route exact path='/signin' render={() => currentUser ? <Redirect to='/' /> : <SignInUpPage />} />
+            <Route exact path='/checkout' component={CheckOut} />
+          </Suspense>
+        </ErrorBoundary>
       </Switch>
     </div>
   );
